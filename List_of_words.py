@@ -1,3 +1,13 @@
+def _extend_words(base, extra):
+    """Append string args or extend iterable args onto a word list."""
+    for arg in extra:
+        if isinstance(arg, str):
+            base.append(arg)
+        else:
+            base.extend(arg)
+    return base
+
+
 class Words:
     @staticmethod
     def positive(*args):
@@ -103,8 +113,7 @@ class Words:
             "amusing",
             "exciting",
         ]
-        positive_words.extend(args)
-        return positive_words
+        return _extend_words(positive_words, args)
 
     @staticmethod
     def negative(*args):
@@ -203,9 +212,7 @@ class Words:
             "hurtful",
             "hysterical",
         ]
-        for arg in args:
-            negative_words.extend(arg)
-        return negative_words
+        return _extend_words(negative_words, args)
 
     @staticmethod
     def currencies(*args):
@@ -280,7 +287,6 @@ class Words:
                     'ruble',
                     'rufiyaa',
                     'rupee',
-                    'rupee',
                     'rupiah',
                     'shilling',
                     'som',
@@ -294,9 +300,7 @@ class Words:
                     'won',
                     'yen',
                     'zloty']
-        for arg in args:
-            currency.extend(arg)
-        return currency
+        return _extend_words(currency, args)
 
     @staticmethod
     def DateNums(*args):
@@ -409,6 +413,4 @@ class Words:
                     'xviii',
                     'xix',
                     'xx']
-        for arg in args:
-            datenums.extend(arg)
-        return datenums
+        return _extend_words(datenums, args)
