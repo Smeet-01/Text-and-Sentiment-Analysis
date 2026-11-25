@@ -12,44 +12,32 @@ class Metrics:
         self.textwords = [word.lower() for word in words if word.isalpha()]
         sentences = sent_tokenize(Text, 'english')
         self.sentences = [sent for sent in sentences]
-        self.avg_sentence_length = round(len(self.textwords)/len(self.sentences),4)
+        self.avg_sentence_length = round(len(self.textwords) / len(self.sentences), 4) if self.sentences else 0.0
         
     #Positivity Score
     def positivity_score(self, positivityList):
-        positivity_score = 0
-        for i in self.textwords:
-            if i in positivityList:
-                positivity_score += 1
-            else:
-                pass
-        return positivity_score
+        positivity_set = set(positivityList)
+        return sum(1 for word in self.textwords if word in positivity_set)
     
     #Negativity Score
     def negativity_score(self, negativityList):
-        negativity_score = 0
-        for i in self.textwords:
-            if i in negativityList:
-                negativity_score += 1
-            else:
-                pass
-        return negativity_score
+        negativity_set = set(negativityList)
+        return sum(1 for word in self.textwords if word in negativity_set)
     
     #Polarity Score  - ranges between -1 to 1
-    def polarity_score(self, positivity_score = int, negativity_score = int):
+    def polarity_score(self, positivity_score: int = 0, negativity_score: int = 0):
         return round((positivity_score - negativity_score)/((positivity_score + negativity_score) + 0.000001),4)
     
     #Subjectivity Score - ranges from 0 to 1
-    def subjectivity_score(self, positivity_score = int, negativity_score = int):
+    def subjectivity_score(self, positivity_score: int = 0, negativity_score: int = 0):
         return round((positivity_score + negativity_score)/(len(self.textwords) + 0.000001), 4)
     
     #Complexity of text - percentage of words in the text that have three or more syllables
     def text_complexity(self):
+        if not self.textwords:
+            return 0.0
         SSP = SyllableTokenizer()
-        complex_words = []
-        for token in self.textwords:
-            SSP.tokenize(token)
-            if (len(SSP.tokenize(token))) > 2:
-                complex_words.append(token)
+        complex_words = [token for token in self.textwords if len(SSP.tokenize(token)) > 2]
         comp_words_pcent = round((len(complex_words)/len(self.textwords)) * 100, 4)
         return comp_words_pcent
 
@@ -64,13 +52,15 @@ class Metrics:
     """
     
     def GFI(self, text_complexity):
-        return round(0.4 * int(self.avg_sentence_length + text_complexity),4)
+        return round(0.4 * (self.avg_sentence_length + text_complexity), 4)
     
 
     #Calculates the average number of syllables for words in the given text
     def Average_syllable_count(self):
+        if not self.textwords:
+            return 0.0
         SSP = SyllableTokenizer()
-        syllable_count_per_word = [(len(SSP.tokenize(token)))for token in self.textwords]
+        syllable_count_per_word = [len(SSP.tokenize(token)) for token in self.textwords]
         return round((sum(syllable_count_per_word)/len(syllable_count_per_word)), 4)
              
 
